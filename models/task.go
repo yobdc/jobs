@@ -10,12 +10,13 @@ type Task struct {
 	ID          uuid.UUID
 	Name        string
 	Desc        string
+	Command     string
 	childTasks  []*Task // 子任务
 	parentTasks []*Task // 父任务
 }
 
 // NewTask 创建任务并初始化
-func NewTask(name string, desc string) *Task {
+func NewTask(name, desc, command string) *Task {
 	if name == "" {
 		return nil
 	}
@@ -23,6 +24,7 @@ func NewTask(name string, desc string) *Task {
 	task.ID = uuid.NewV4()
 	task.Name = name
 	task.Desc = desc
+	task.Command = command
 	task.childTasks = make([]*Task, 0)
 	task.parentTasks = make([]*Task, 0)
 	return task

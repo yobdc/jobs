@@ -16,3 +16,10 @@ const (
 	Failed
 	Cancelled
 )
+
+// TaskInstance 任务执行的实例对象
+type TaskInstance struct {
+	task   *Task
+	result TaskResult
+	env    map[string]string
+}
