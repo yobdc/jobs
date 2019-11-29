@@ -10,13 +10,13 @@ type Task struct {
 	ID          uuid.UUID
 	Name        string
 	Desc        string
-	Command     string
+	Cmd         string
 	childTasks  []*Task // 子任务
 	parentTasks []*Task // 父任务
 }
 
 // NewTask 创建任务并初始化
-func NewTask(name, desc, command string) *Task {
+func NewTask(name, desc, cmd string) *Task {
 	if name == "" {
 		return nil
 	}
@@ -24,10 +24,31 @@ func NewTask(name, desc, command string) *Task {
 	task.ID = uuid.NewV4()
 	task.Name = name
 	task.Desc = desc
-	task.Command = command
+	task.Cmd = cmd
 	task.childTasks = make([]*Task, 0)
 	task.parentTasks = make([]*Task, 0)
 	return task
+}
+
+// NewInstance 创建任务实例
+func (task *Task) NewInstance() *TaskInstance {
+	allInstances := make(map[*Task]*TaskInstance)
+	return task.makeInstance(allInstances)
+}
+func (task *Task) makeInstance(allInstances map[*Task]*TaskInstance) *TaskInstance {
+	if _, ok := allInstances[task]; ok {
+		return allInstances[task]
+	}
+	instance := &TaskInstance{}
+	instance.task = task
+	instance.childInstances = make([]*TaskInstance, len(task.childTasks))
+	instance.parentInstances = make(map[*TaskInstance]bool)
+	allInstances[task] = instance
+	for i := range task.childTasks {
+		instance.childInstances[i] = task.childTasks[i].makeInstance(allInstances)
+		instance.childInstances[i].parentInstances[instance] = false
+	}
+	return instance
 }
 
 // AddChild 添加子任务
@@ -51,7 +72,7 @@ func (task *Task) AddChild(child *Task) (*Task, error) {
 	return task, nil
 }
 
-// checkTaskCircle 在parent.AddChild(child)之前检查是否会产生循环依赖
+// checkTaskCircle 在parent.AddChild(child)之前检查是否会导致任务循环依赖
 func checkTaskCircle(parent, child *Task) bool {
 	if parent == nil || child == nil {
 		return false

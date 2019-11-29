@@ -7,7 +7,7 @@ import (
 
 func TestNewtask(t *testing.T) {
 	var t1 *models.Task
-	t1 = models.NewTask("", "")
+	t1 = models.NewTask("", "", "")
 	if t1 != nil {
 		t.Error("t1 = models.NewTask(\"\", \"\") => fail")
 	}
