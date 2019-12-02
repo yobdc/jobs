@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"github.com/satori/go.uuid"
+	"time"
 )
 
 // Task 用户任务
@@ -43,6 +44,7 @@ func (task *Task) makeInstance(allInstances map[*Task]*TaskInstance) *TaskInstan
 	instance.task = task
 	instance.childInstances = make([]*TaskInstance, len(task.childTasks))
 	instance.parentInstances = make(map[*TaskInstance]bool)
+	instance.createTime = time.Now()
 	allInstances[task] = instance
 	for i := range task.childTasks {
 		instance.childInstances[i] = task.childTasks[i].makeInstance(allInstances)
