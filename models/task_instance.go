@@ -65,7 +65,7 @@ func (taskInstance *TaskInstance) Exec(out chan<- TaskResult) {
 		return
 	}
 
-	log.Println(taskInstance.task.Name, "end")
+	log.Println(taskInstance.task.Name, "end with success")
 	out <- TaskOK("success")
 }
 
