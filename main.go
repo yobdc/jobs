@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/DeanThompson/ginpprof"
 	"github.com/gin-gonic/gin"
+	_ "github.com/yobdc/jobs/conf"
 	"github.com/yobdc/jobs/models"
 	"log"
 	"net/http"
